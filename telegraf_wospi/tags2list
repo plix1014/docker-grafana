@@ -1,0 +1,17 @@
+# string tags to list
+#
+# produce a list of string tags
+#
+#
+#
+# ./wxdata2json.py |egrep ": " |egrep -v 'country|city|"v"' | egrep -v ": [0-9]+" > wx.string.list
+#
+
+
+# input of above file
+IN=${$1-:wx.string.list}
+
+
+# produce list for json_string_fields
+awk '{print $1}' $IN | sed -e 's,^","v_,g' -e 's/:/,/g' | sort | awk '{printf $1" "}' 
+
