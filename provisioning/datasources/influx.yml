@@ -1,0 +1,17 @@
+# Datei: grafana/provisioning/datasources/influx.yml
+apiVersion: 1
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://influx:8086
+    isDefault: true
+    jsonData:
+      dbName: dockerbuch
+      httpMode: GET
+      httpHeaderName1: 'Authorization'
+      timeInterval: '>10s'
+    secureJsonData:
+      httpHeaderValue1: 'Token xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+    editable: true
+

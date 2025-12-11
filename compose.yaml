@@ -1,0 +1,106 @@
+services:
+  grafana:
+    image: juharov/grafana_troja:0.5.1
+    #build: .
+    restart: unless-stopped
+    ports:
+      - ${GRAFANA_PORT}:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    volumes:
+      - grafana:/var/lib/grafana
+      - ./dashboards:/var/lib/grafana/dashboards
+      - ./provisioning:/etc/grafana/provisioning
+      - ./plugins:/var/lib/grafana/plugins
+
+  telegraf_sys:
+    image: juharov/telegraf_sys:0.6.0
+    #build: telegraf_sys/
+    hostname: local_host
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/utmp:/var/run/utmp:ro
+    environment:
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+      - INFLUXDB_URL=${INFLUXDB_URL}
+    user: ${TELEGRAF_USER}:${TELEGRAF_GID}
+    devices:
+      - /dev/vcio:/dev/vcio
+
+  telegraf_fritz:
+    image: juharov/telegraf_fritz:0.6.1
+    #build: telegraf_fritz/
+    hostname: local_host
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/utmp:/var/run/utmp:ro
+    environment:
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+      - INFLUXDB_URL=${INFLUXDB_URL}
+      - FRITZBOX_USER=${FRITZBOX_USER}
+      - FRITZBOX_PASSWORD="${FRITZBOX_PASSWORD}"
+      - FRITZBOX_HOST=${FRITZBOX_HOST}
+    user: ${TELEGRAF_USER}:${TELEGRAF_GID}
+
+  telegraf_wospi:
+    image: juharov/telegraf_wospi:0.6.1
+    #build: telegraf_wospi/
+    hostname: local_host
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/utmp:/var/run/utmp:ro
+    environment:
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+      - INFLUXDB_URL=${INFLUXDB_URL}
+      - WXDATA_URL=${WXDATA_URL}
+      - WXSTATION_COUNTRY=${WXSTATION_COUNTRY}
+    user: ${TELEGRAF_USER}:${TELEGRAF_GID}
+
+  telegraf_openweathermap:
+    image: juharov/telegraf_openweathermap:0.2.1
+    #build: telegraf_openweathermap/
+    hostname: local_host
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/utmp:/var/run/utmp:ro
+    environment:
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
+      - INFLUXDB_ORG=${INFLUXDB_ORG}
+      - INFLUXDB_BUCKET=${INFLUXDB_BUCKET}
+      - INFLUXDB_URL=${INFLUXDB_URL}
+    user: ${TELEGRAF_USER}:${TELEGRAF_GID}
+
+  influx:
+    image: influxdb:2.7
+    restart: unless-stopped
+    volumes:
+      - influx:/var/lib/influxdb2
+      # should this be a named volume?
+      # "Destination": "/etc/influxdb2",
+      #- influx2conf:/etc/influxdb2/influx-configs
+
+    ports:
+      - ${DOCKER_INFLUXDB_INIT_PORT}:8086
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=${DOCKER_INFLUXDB_INIT_MODE}
+      - DOCKER_INFLUXDB_INIT_USERNAME=${DOCKER_INFLUXDB_INIT_USERNAME}
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${DOCKER_INFLUXDB_INIT_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=${DOCKER_INFLUXDB_INIT_ORG}
+      - DOCKER_INFLUXDB_INIT_BUCKET=${DOCKER_INFLUXDB_INIT_BUCKET}
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${DOCKER_INFLUXDB_INIT_ADMIN_TOKEN}
+      - DOCKER_INFLUXDB_INIT_RETENTION=${DOCKER_INFLUXDB_INIT_RETENTION}
+volumes:
+  influx:
+  influx2conf:
+  grafana:
+
