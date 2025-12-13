@@ -9,25 +9,23 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         workdir:
           - telegraf_sys_pi
-          # später einfach erweitern:
-          # - telegraf_sys_amd64
+          # weitere Images später hier hinzufügen, z.B. telegraf_sys_amd64
 
     env:
       DOCKER_USER: ${{ secrets.DOCKERHUB_USER }}
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Docker Login
+      - name: Docker login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USER }}
@@ -35,17 +33,19 @@ jobs:
 
       - name: Load image config
         run: |
-          cd ${{ matrix.workdir }}
+          # Entfernt mögliche CRLF-Zeilenenden
+          sed -i 's/\r$//' "${{ matrix.workdir }}/build.env"
+          sed -i 's/\r$//' "${{ matrix.workdir }}/version.txt"
 
-          set -o allexport
-          source build.env
-          source version.txt
-          set +o allexport
+          # ENV & Version laden
+          source "${{ matrix.workdir }}/build.env"
+          source "${{ matrix.workdir }}/version.txt"
 
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
           echo "TELEGRAF_VERSION=$TELEGRAF_VERSION" >> $GITHUB_ENV
           echo "BUILD=$BUILD" >> $GITHUB_ENV
+          echo "WORKDIR=${{ matrix.workdir }}" >> $GITHUB_ENV
 
       - name: Define image tags
         run: |
@@ -53,18 +53,15 @@ jobs:
           echo "TAG_VERSION=${TELEGRAF_VERSION}" >> $GITHUB_ENV
           echo "TAG_LATEST=latest" >> $GITHUB_ENV
 
-      - name: Debug vars
+      - name: Debug environment
         run: |
-          echo "matrix.workdir = ${{ matrix.workdir }}"
+          echo "WORKDIR=$WORKDIR"
           echo "IMAGE_NAME=$IMAGE_NAME"
           echo "PLATFORM=$PLATFORM"
           echo "TELEGRAF_VERSION=$TELEGRAF_VERSION"
           echo "TAG_BUILD=$TAG_BUILD"
-          echo "TAG_VERSION=$TAG_VERSION"
-          echo "TAG_LATEST=$TAG_LATEST"
 
-
-      - name: Build & push image
+      - name: Build & push Docker image
         run: |
           docker buildx build \
             --platform "$PLATFORM" \
