@@ -61,15 +61,15 @@ jobs:
           echo "TELEGRAF_VERSION=$TELEGRAF_VERSION"
 
       - name: Build & push image
-        run: |
-          cd "${{ matrix.workdir }}"
+	run: |
+	  cd "${{ matrix.workdir }}"
 
-          docker buildx build \
-            --platform $PLATFORM \
-            --build-arg TELEGRAF_VERSION=$TELEGRAF_VERSION \
-            -t $DOCKER_USER/$IMAGE_NAME:$TAG_BUILD \
-            -t $DOCKER_USER/$IMAGE_NAME:$TAG_VERSION \
-            -t $DOCKER_USER/$IMAGE_NAME:$TAG_LATEST \
-            --push \
-            .
+	  docker buildx build \
+	    --platform "$PLATFORM" \
+	    --build-arg TELEGRAF_VERSION="$TELEGRAF_VERSION" \
+	    -t "$DOCKER_USER/$IMAGE_NAME:$TAG_BUILD" \
+	    -t "$DOCKER_USER/$IMAGE_NAME:$TAG_VERSION" \
+	    -t "$DOCKER_USER/$IMAGE_NAME:$TAG_LATEST" \
+	    --push \
+	    .
 
