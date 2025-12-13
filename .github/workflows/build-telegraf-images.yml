@@ -64,7 +64,7 @@ jobs:
       - name: Build & Push Docker Image (multi-arch)
         uses: docker/build-push-action@v5
         with:
-          context: ./${{ matrix.workdir }}
+          context: .
           file: ${{ matrix.workdir }}/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
