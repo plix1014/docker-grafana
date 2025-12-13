@@ -54,20 +54,14 @@ jobs:
           echo "TAG_VERSION=${TELEGRAF_VERSION}" >> $GITHUB_ENV
           echo "TAG_LATEST=latest" >> $GITHUB_ENV
 
-      - name: Check for existing cache
-        id: cache-check
-        run: |
-          docker pull ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:cache || echo "no-cache"
-          echo "CACHE_EXISTS=$(docker image inspect ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:cache >/dev/null 2>&1 && echo true || echo false)" >> $GITHUB_ENV
-
-      - name: Build and push Docker image (arm64) if changed
-        if: env.CACHE_EXISTS != 'true'
+      - name: Build & push image
         run: |
           docker buildx build \
-            --platform ${{ env.PLATFORM }} \
-            --build-arg TELEGRAF_VERSION=${TELEGRAF_VERSION} \
-            -t ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG_X} \
-            --cache-from=type=registry,ref=${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:cache \
-            --cache-to=type=registry,ref=${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:cache,mode=max \
+            --platform $PLATFORM \
+            --build-arg TELEGRAF_VERSION=$TELEGRAF_VERSION \
+            -t $DOCKER_USER/$IMAGE_NAME:$TAG_BUILD \
+            -t $DOCKER_USER/$IMAGE_NAME:$TAG_VERSION \
+            -t $DOCKER_USER/$IMAGE_NAME:$TAG_LATEST \
             --push \
-            ${{ env.WORKDIR }}
+            $WORKDIR
+
