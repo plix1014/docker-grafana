@@ -72,8 +72,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: build_tmp            # Kontext = temporäres Verzeichnis
-          file: Dockerfile               # Dockerfile liegt im Kontext-Root
-          platforms: linux/amd64,linux/arm64
+          file: ./build_tmp/Dockerfile       # absolut innerhalb Runner-Workspace
+          platforms: linux/arm64
           push: true
           build-args: |
             TELEGRAF_VERSION=${{ env.TELEGRAF_VERSION }}
