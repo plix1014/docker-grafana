@@ -2,8 +2,8 @@ name: Build & Push Telegraf Images
 
 on:
   push:
-    paths:
-      - 'telegraf_*/**'
+    #paths:
+    #  - 'telegraf_*/**'
   workflow_dispatch:
 
 jobs:
@@ -63,16 +63,16 @@ jobs:
           echo "TAG_VERSION=$TAG_VERSION"
           echo "TAG_LATEST=$TAG_LATEST"
 
+
       - name: Build & push image
         run: |
-          cd "${{ matrix.workdir }}"
-
           docker buildx build \
             --platform "$PLATFORM" \
             --build-arg TELEGRAF_VERSION="$TELEGRAF_VERSION" \
+            -f "${{ matrix.workdir }}/Dockerfile" \
             -t "$DOCKER_USER/$IMAGE_NAME:$TAG_BUILD" \
             -t "$DOCKER_USER/$IMAGE_NAME:$TAG_VERSION" \
             -t "$DOCKER_USER/$IMAGE_NAME:$TAG_LATEST" \
             --push \
-            .
+            "${{ matrix.workdir }}"
 
