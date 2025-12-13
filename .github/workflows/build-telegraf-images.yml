@@ -60,6 +60,7 @@ jobs:
           docker pull ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:cache || echo "no-cache"
           echo "CACHE_EXISTS=$(docker image inspect ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:cache >/dev/null 2>&1 && echo true || echo false)" >> $GITHUB_ENV
 
+      - name: Build and push Docker image (arm64) if changed
         if: env.CACHE_EXISTS != 'true'
         run: |
           docker buildx build \
