@@ -54,11 +54,11 @@ jobs:
           echo "TAG_LATEST=latest" >> $GITHUB_ENV
 
       - name: Debug vars
-	run: |
-	  echo "matrix.workdir = ${{ matrix.workdir }}"
-	  echo "IMAGE_NAME=$IMAGE_NAME"
-	  echo "PLATFORM=$PLATFORM"
-	  echo "TELEGRAF_VERSION=$TELEGRAF_VERSION"
+        run: |
+          echo "matrix.workdir = ${{ matrix.workdir }}"
+          echo "IMAGE_NAME=$IMAGE_NAME"
+          echo "PLATFORM=$PLATFORM"
+          echo "TELEGRAF_VERSION=$TELEGRAF_VERSION"
 
       - name: Build & push image
         run: |
