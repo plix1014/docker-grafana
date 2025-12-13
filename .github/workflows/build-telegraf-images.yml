@@ -15,7 +15,7 @@ jobs:
         workdir:
           - telegraf_sys_pi
           - telegraf_wospi
-          # hier später weitere Telegraf Images hinzufügen
+          - telegraf_openweathermap
 
     env:
       DOCKER_USER: ${{ secrets.DOCKERHUB_USER }}
