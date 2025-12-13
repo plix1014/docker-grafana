@@ -69,9 +69,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            TELEGRAF_VERSION=${TELEGRAF_VERSION}
+            TELEGRAF_VERSION=${{ env.TELEGRAF_VERSION }}
           tags: |
-            ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${TAG_BUILD}
-            ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${TAG_VERSION}
+            ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.TAG_BUILD }}
+            ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:${{ env.TAG_VERSION }}
             ${{ secrets.DOCKERHUB_USER }}/${{ env.IMAGE_NAME }}:latest
 
