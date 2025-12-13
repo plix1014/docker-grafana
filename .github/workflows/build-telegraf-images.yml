@@ -59,6 +59,9 @@ jobs:
           echo "IMAGE_NAME=$IMAGE_NAME"
           echo "PLATFORM=$PLATFORM"
           echo "TELEGRAF_VERSION=$TELEGRAF_VERSION"
+          echo "TAG_BUILD=$TAG_BUILD"
+          echo "TAG_VERSION=$TAG_VERSION"
+          echo "TAG_LATEST=$TAG_LATEST"
 
       - name: Build & push image
 	run: |
