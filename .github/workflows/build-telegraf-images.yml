@@ -62,6 +62,8 @@ jobs:
 
       - name: Build & push image
         run: |
+          cd "${{ matrix.workdir }}"
+
           docker buildx build \
             --platform $PLATFORM \
             --build-arg TELEGRAF_VERSION=$TELEGRAF_VERSION \
