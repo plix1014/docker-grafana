@@ -16,6 +16,7 @@ jobs:
           - telegraf_sys_pi
           - telegraf_wospi
           - telegraf_openweathermap
+          - telegraf_fritz
 
     env:
       DOCKER_USER: ${{ secrets.DOCKERHUB_USER }}
