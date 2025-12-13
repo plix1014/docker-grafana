@@ -26,13 +26,11 @@ jobs:
 
       - name: Load image config
         run: |
-          # Entfernt mögliche Windows-Zeilenenden
+          # remove CRLF line endings
           sed -i 's/\r$//' "${{ matrix.workdir }}/build.env"
-          sed -i 's/\r$//' "${{ matrix.workdir }}/version.txt"
 
-          # ENV & Version laden
+          # load ENV
           source "${{ matrix.workdir }}/build.env"
-          source "${{ matrix.workdir }}/version.txt"
 
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
           echo "PLATFORM=$PLATFORM" >> $GITHUB_ENV
@@ -63,20 +61,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USER }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      #- name: Prepare build context (Workaround Buildx)
-      #  run: |
-      #    mkdir build_tmp
-      #    cp -r ${{ matrix.workdir }}/* build_tmp/
-      #    ls -al build_tmp  # optional: Debug
-
       - name: Build & Push Docker Image (multi-arch)
         uses: docker/build-push-action@v5
         with:
-          #context: build_tmp            # Kontext = temporäres Verzeichnis
-          #file: ./build_tmp/Dockerfile       # absolut innerhalb Runner-Workspace
-          context: "${{ matrix.workdir }}"            # Kontext = temporäres Verzeichnis
-          file: ./${{ matrix.workdir }}/Dockerfile       # absolut innerhalb Runner-Workspace
-          platforms: linux/arm64
+          context: "${{ matrix.workdir }}"
+          file: ./${{ matrix.workdir }}/Dockerfile
+          platforms: ${{ env.PLATFORM }}
           push: true
           build-args: |
             TELEGRAF_VERSION=${{ env.TELEGRAF_VERSION }}
