@@ -2,8 +2,8 @@ name: Build & Push Telegraf Images
 
 on:
   push:
-    #paths:
-    #  - 'telegraf_*/**'
+    paths:
+      - 'telegraf_*/**'
   workflow_dispatch:
 
 jobs:
