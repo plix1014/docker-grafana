@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-caddy:
+  build-grafana:
     #runs-on: ubuntu-latest
     runs-on: ubuntu-24.04-arm  # oder ubuntu-22.04-arm
 
@@ -22,8 +22,8 @@ jobs:
 
       - name: Load build config
         run: |
-          sed -i 's/\r$//' build/build.env
-          source build/build.env
+          sed -i 's/\r$//' build.env
+          source build.env
 
           echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
           echo "GRAFANA_VERSION=$GRAFANA_VERSION" >> $GITHUB_ENV
