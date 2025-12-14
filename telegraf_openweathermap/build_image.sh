@@ -4,10 +4,11 @@
 
 # build container
 
-CONTAINER_NAME=telegraf_openweathermap
+CONTAINER_NAME=$(basename `pwd`)
 CONTAINER_TAG=latest
+CONTAINER_TAG=0.6.5
 
 
-echo "docker build -t $CONTAINER_NAME:CONTAINER_TAG ."
+echo "docker build -t $CONTAINER_NAME:$CONTAINER_TAG ."
 docker build -t $CONTAINER_NAME:$CONTAINER_TAG .
 
