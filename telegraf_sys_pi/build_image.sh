@@ -4,7 +4,7 @@
 
 # build container
 
-CONTAINER_NAME=telegraf_sys_pi
+CONTAINER_NAME=$(basename `pwd`)
 CONTAINER_TAG=latest
 CONTAINER_TAG=0.6.5
 
