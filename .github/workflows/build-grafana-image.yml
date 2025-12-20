@@ -2,10 +2,12 @@ name: Build & Push Grafana Image
 
 on:
   push:
-    #paths:
-    #  - 'Dockerfile'
-    #  - 'provisioning/**'
-    #  - 'dashboards/**'
+    paths:
+      - 'Dockerfile'
+      - 'compose.yaml'
+      - 'build.env'
+      - 'provisioning/**'
+      - 'dashboards/**'
   workflow_dispatch:
 
 jobs:
