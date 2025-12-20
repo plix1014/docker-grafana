@@ -28,6 +28,18 @@ jobs:
         with:
           fetch-depth: 2   # wichtig für git diff
 
+      - name: Check if image changed
+        id: changes
+        shell: bash
+        run: |
+          echo "Checking changes for ${{ matrix.workdir }}..."
+          git fetch --depth=2
+          CHANGED=false
+          if git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep -q "^${{ matrix.workdir }}/"; then
+            CHANGED=true
+          fi
+          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
+
       - name: Load image config
         if: env.CHANGED == 'true'
         run: |
@@ -49,18 +61,6 @@ jobs:
           echo "TAG_BUILD=${TELEGRAF_VERSION}-${BUILD}" >> $GITHUB_ENV
           echo "TAG_VERSION=${TELEGRAF_VERSION}" >> $GITHUB_ENV
           echo "TAG_LATEST=latest" >> $GITHUB_ENV
-
-      - name: Check if image changed
-        id: changes
-        shell: bash
-        run: |
-          echo "Checking changes for ${{ matrix.workdir }}..."
-          git fetch --depth=2
-          CHANGED=false
-          if git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep -q "^${{ matrix.workdir }}/"; then
-            CHANGED=true
-          fi
-          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
 
       - name: Debug environment
         if: env.CHANGED == 'true'
