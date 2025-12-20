@@ -23,7 +23,6 @@ RUN usermod -aG video telegraf
 ADD raspi.libs.tar.gz /
 COPY entrypoint.sh /
 
-
 USER telegraf
 
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
