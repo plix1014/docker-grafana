@@ -1,6 +1,10 @@
 # Datei: grafana/telegraf/Dockerfile (docbuc/telegraf)
 FROM telegraf:latest
 
+ARG TELEGRAF_VERSION
+
+ENV TELEGRAF_VERSION=${TELEGRAF_VERSION}
+
 # os config
 RUN apt update && \
   apt-get install -y --no-install-recommends sudo && \
