@@ -25,20 +25,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Determine if this image changed
-        id: changes
-        run: |
-          echo "Checking changes for ${{ matrix.workdir }}..."
-          if git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep -q "^${{ matrix.workdir }}/"; then
-            echo "CHANGED=true" >> $GITHUB_ENV
-          else
-            echo "CHANGED=false" >> $GITHUB_ENV
-          fi
-
-      - name: Skip build if no changes
-        if: env.CHANGED == 'false'
-        run: echo "No changes in ${{ matrix.workdir }}, skipping build."
+        with:
+          fetch-depth: 2   # wichtig für git diff
 
       - name: Load image config
         if: env.CHANGED == 'true'
@@ -62,6 +50,18 @@ jobs:
           echo "TAG_VERSION=${TELEGRAF_VERSION}" >> $GITHUB_ENV
           echo "TAG_LATEST=latest" >> $GITHUB_ENV
 
+      - name: Check if image changed
+        id: changes
+        shell: bash
+        run: |
+          echo "Checking changes for ${{ matrix.workdir }}..."
+          git fetch --depth=2
+          CHANGED=false
+          if git diff --name-only ${{ github.sha }}^ ${{ github.sha }} | grep -q "^${{ matrix.workdir }}/"; then
+            CHANGED=true
+          fi
+          echo "CHANGED=$CHANGED" >> $GITHUB_ENV
+
       - name: Debug environment
         if: env.CHANGED == 'true'
         run: |
@@ -70,6 +70,7 @@ jobs:
           echo "PLATFORM=$PLATFORM"
           echo "TELEGRAF_VERSION=$TELEGRAF_VERSION"
           echo "TAG_BUILD=$TAG_BUILD"
+          echo "CHANGED=$CHANGED"
 
       - name: Set up Docker Buildx
         if: env.CHANGED == 'true'
